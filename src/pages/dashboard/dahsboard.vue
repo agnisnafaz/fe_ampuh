@@ -505,6 +505,7 @@ export default {
         if (status === 200 || status === 201) {
           this.chart1.series.data = data.y;
           this.chart1.options.xaxis.categories = data.x;
+          console.log(this.chart1.data);
           setInterval(() => {
             this.getChartSuhu();
           }, 3000);
@@ -544,8 +545,8 @@ export default {
     getChartSaturasi() {
       API.get("/api/grafiksaturasi").then(({ status, data }) => {
         if (status == 200 || status == 201) {
-          this.chart1.series.data = data.y;
-          this.chart1.options.xaxis.categories = data.x;
+          this.chart2.series.data = data.y;
+          this.chart2.options.xaxis.categories = data.x;
           setInterval(() => {
             this.getChartSaturasi();
           }, 3000);
@@ -583,10 +584,10 @@ export default {
       });
     },
     getChartPengunjung() {
-      API.get("/api/jumlahpengunjung").then(({ status, data }) => {
+      API.get("/api/grafikpengunjung").then(({ status, data }) => {
         if (status == 200 || status == 201) {
-          this.chart1.series.data = data.y;
-          this.chart1.options.xaxis.categories = data.x;
+          this.chart3.series.data = data.y;
+          this.chart3.options.xaxis.categories = data.x;
           setInterval(() => {
             this.getChartPengunjung();
           }, 3000);
