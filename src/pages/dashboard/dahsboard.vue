@@ -489,7 +489,6 @@ export default {
     this.getChartSuhu();
     this.getChartSaturasi();
     this.getChartPengunjung();
-
     this.getSuhuTertinggi();
     this.getSuhuRata();
     this.getSuhuTerendah();
@@ -503,11 +502,11 @@ export default {
   methods: {
     getChartSuhu() {
       API.get("/api/grafiksuhu").then(({ status, data }) => {
-        if (status == 200 || status == 201) {
+        if (status === 200 || status === 201) {
           this.chart1.series.data = data.y;
           this.chart1.options.xaxis.categories = data.x;
           setInterval(() => {
-            this.getChartSuhu;
+            this.getChartSuhu();
           }, 3000);
         }
       });
@@ -517,7 +516,7 @@ export default {
         if (status == 200 || status == 201) {
           this.suhu_tertinggi = data.data;
           setInterval(() => {
-            this.getSuhuTertinggi;
+            this.getSuhuTertinggi();
           }, 3000);
         }
       });
@@ -527,7 +526,7 @@ export default {
         if (status == 200 || status == 201) {
           this.suhu_terendah = data.data;
           setInterval(() => {
-            this.getSuhuTerendah;
+            this.getSuhuTerendah();
           }, 3000);
         }
       });
@@ -537,7 +536,7 @@ export default {
         if (status == 200 || status == 201) {
           this.suhu_rata = data.data;
           setInterval(() => {
-            this.getSuhuRata;
+            this.getSuhuRata();
           }, 3000);
         }
       });
@@ -548,7 +547,7 @@ export default {
           this.chart1.series.data = data.y;
           this.chart1.options.xaxis.categories = data.x;
           setInterval(() => {
-            this.getChartSaturasi;
+            this.getChartSaturasi();
           }, 3000);
         }
       });
@@ -558,7 +557,7 @@ export default {
         if (status == 200 || status == 201) {
           this.saturasi_tertinggi = data.data;
           setInterval(() => {
-            this.getSaturasiTertinggi;
+            this.getSaturasiTertinggi();
           }, 3000);
         }
       });
@@ -568,7 +567,7 @@ export default {
         if (status == 200 || status == 201) {
           this.saturasi_terendah = data.data;
           setInterval(() => {
-            this.getSaturasiTerendah;
+            this.getSaturasiTerendah();
           }, 3000);
         }
       });
@@ -578,7 +577,7 @@ export default {
         if (status == 200 || status == 201) {
           this.saturasi_rata = data.data;
           setInterval(() => {
-            this.getSaturasiRata;
+            this.getSaturasiRata();
           }, 3000);
         }
       });
@@ -589,7 +588,7 @@ export default {
           this.chart1.series.data = data.y;
           this.chart1.options.xaxis.categories = data.x;
           setInterval(() => {
-            this.getChartPengunjung;
+            this.getChartPengunjung();
           }, 3000);
         }
       });
@@ -599,7 +598,7 @@ export default {
         if (status == 200 || status == 201) {
           this.pengunjung_perhari = data.data;
           setInterval(() => {
-            this.getPengunjungPerhari;
+            this.getPengunjungPerhari();
           }, 3000);
         }
       });
@@ -609,7 +608,7 @@ export default {
         if (status == 200 || status == 201) {
           this.pengunjung_perminggu = data.data;
           setInterval(() => {
-            this.getPengunjungPerminggu;
+            this.getPengunjungPerminggu();
           }, 3000);
         }
       });
@@ -619,7 +618,7 @@ export default {
         if (status == 200 || status == 201) {
           this.pengunjung_perbulan = data.data;
           setInterval(() => {
-            this.getPengunjungPerbulan;
+            this.getPengunjungPerbulan();
           }, 3000);
         }
       });
