@@ -35,7 +35,7 @@
                         <span class="num font-primary">Tertinggi </span>
                         <div>
                           <span class="text-muted mt-2 mb-2 block-bottom"
-                            >38<sup>o</sup>C</span
+                            >{{ suhu_tertinggi }}<sup>o</sup>C</span
                           >
                         </div>
                       </div>
@@ -45,7 +45,7 @@
                         <span class="num font-primary">Rata-rata </span>
                         <div>
                           <span class="text-muted mt-2 mb-2 block-bottom"
-                            >35<sup>o</sup>C</span
+                            >{{ suhu_rata }}<sup>o</sup>C</span
                           >
                         </div>
                       </div>
@@ -55,7 +55,7 @@
                         <span class="num font-primary">Terendah </span>
                         <div>
                           <span class="text-muted mt-2 mb-2 block-bottom"
-                            >33<sup>o</sup>C</span
+                            >{{ suhu_terendah }}<sup>o</sup>C</span
                           >
                         </div>
                       </div>
@@ -87,7 +87,7 @@
                         <span class="num font-primary">Tertinggi </span>
                         <div>
                           <span class="text-muted mt-2 mb-2 block-bottom"
-                            >99&#37;</span
+                            >{{ saturasi_tertinggi }}&#37;</span
                           >
                         </div>
                       </div>
@@ -97,7 +97,7 @@
                         <span class="num font-primary">Rata-rata </span>
                         <div>
                           <span class="text-muted mt-2 mb-2 block-bottom"
-                            >93&#37;</span
+                            >{{ saturasi_rata }}&#37;</span
                           >
                         </div>
                       </div>
@@ -107,7 +107,7 @@
                         <span class="num font-primary">Terendah </span>
                         <div>
                           <span class="text-muted mt-2 mb-2 block-bottom"
-                            >90&#37;</span
+                            >{{ saturasi_terendah }}&#37;</span
                           >
                         </div>
                       </div>
@@ -147,9 +147,9 @@
                     <div>
                       <span class="num font-primary">Perhari </span>
                       <div>
-                        <span class="text-muted mt-2 mb-2 block-bottom"
-                          >38</span
-                        >
+                        <span class="text-muted mt-2 mb-2 block-bottom">{{
+                          pengunjung_perhari
+                        }}</span>
                       </div>
                     </div>
                   </div>
@@ -157,9 +157,9 @@
                     <div>
                       <span class="num font-primary">Perminggu</span>
                       <div>
-                        <span class="text-muted mt-2 mb-2 block-bottom"
-                          >35</span
-                        >
+                        <span class="text-muted mt-2 mb-2 block-bottom">{{
+                          pengunjung_perminggu
+                        }}</span>
                       </div>
                     </div>
                   </div>
@@ -167,9 +167,9 @@
                     <div>
                       <span class="num font-primary">Perbulan</span>
                       <div>
-                        <span class="text-muted mt-2 mb-2 block-bottom"
-                          >33</span
-                        >
+                        <span class="text-muted mt-2 mb-2 block-bottom">{{
+                          pengunjung_perbulan
+                        }}</span>
                       </div>
                     </div>
                   </div>
@@ -248,6 +248,15 @@ export default {
   },
   data() {
     return {
+      suhu_tertinggi: 0,
+      suhu_terendah: 0,
+      suhu_rata: 0,
+      saturasi_tertinggi: 0,
+      saturasi_terendah: 0,
+      saturasi_rata: 0,
+      pengunjung_perhari: 0,
+      pengunjung_perminggu: 0,
+      pengunjung_perbulan: 0,
       chart1: {
         options: {
           chart: {
@@ -315,18 +324,7 @@ export default {
           },
           xaxis: {
             show: true,
-            categories: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-            ],
+            categories: [],
           },
           fill: {
             colors: ["#51BB25"],
@@ -349,7 +347,7 @@ export default {
         series: [
           {
             name: "Saturasi",
-            data: [14, 12, 20, 20, 14, 22, 18, 26, 12, 18, 0],
+            data: [],
           },
         ],
       },
@@ -386,37 +384,9 @@ export default {
             curve: "smooth",
             lineCap: "butt",
           },
-          title: {
-            text: "Load Average",
-            align: "left",
-            style: {
-              fontSize: "12px",
-            },
-          },
-          subtitle: {
-            text: "20%",
-            floating: true,
-            align: "right",
-            offsetY: 0,
-            style: {
-              fontSize: "22px",
-            },
-          },
+
           xaxis: {
-            categories: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ],
+            categories: [],
           },
           fill: {
             colors: [secondary],
@@ -431,7 +401,7 @@ export default {
         },
         series: [
           {
-            data: [200, 250, 330, 390, 420, 500, 580, 620, 700],
+            data: [],
           },
         ],
       },
@@ -516,17 +486,140 @@ export default {
     };
   },
   created() {
-    this.getData();
+    this.getChartSuhu();
+    this.getChartSaturasi();
+    this.getChartPengunjung();
+
+    this.getSuhuTertinggi();
+    this.getSuhuRata();
+    this.getSuhuTerendah();
+    this.getSaturasiTertinggi();
+    this.getSaturasiRata();
+    this.getSaturasiTerendah();
+    this.getPengunjungPerhari();
+    this.getPengunjungPerminggu();
+    this.getPengunjungPerbulan();
   },
   methods: {
-    getData() {
-      API.get("/api/maxsuhu").then(({ status, data }) => {
+    getChartSuhu() {
+      API.get("/api/grafiksuhu").then(({ status, data }) => {
         if (status == 200 || status == 201) {
           this.chart1.series.data = data.y;
           this.chart1.options.xaxis.categories = data.x;
+          setInterval(() => {
+            this.getChartSuhu;
+          }, 3000);
+        }
+      });
+    },
+    getSuhuTertinggi() {
+      API.get("/api/maxsuhu").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
           this.suhu_tertinggi = data.data;
           setInterval(() => {
             this.getSuhuTertinggi;
+          }, 3000);
+        }
+      });
+    },
+    getSuhuTerendah() {
+      API.get("/api/minsuhu").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.suhu_terendah = data.data;
+          setInterval(() => {
+            this.getSuhuTerendah;
+          }, 3000);
+        }
+      });
+    },
+    getSuhuRata() {
+      API.get("/api/meansuhu").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.suhu_rata = data.data;
+          setInterval(() => {
+            this.getSuhuRata;
+          }, 3000);
+        }
+      });
+    },
+    getChartSaturasi() {
+      API.get("/api/grafiksaturasi").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.chart1.series.data = data.y;
+          this.chart1.options.xaxis.categories = data.x;
+          setInterval(() => {
+            this.getChartSaturasi;
+          }, 3000);
+        }
+      });
+    },
+    getSaturasiTertinggi() {
+      API.get("/api/maxsaturasi").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.saturasi_tertinggi = data.data;
+          setInterval(() => {
+            this.getSaturasiTertinggi;
+          }, 3000);
+        }
+      });
+    },
+    getSaturasiTerendah() {
+      API.get("/api/minsaturasi").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.saturasi_terendah = data.data;
+          setInterval(() => {
+            this.getSaturasiTerendah;
+          }, 3000);
+        }
+      });
+    },
+    getSaturasiRata() {
+      API.get("/api/meansaturasi").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.saturasi_rata = data.data;
+          setInterval(() => {
+            this.getSaturasiRata;
+          }, 3000);
+        }
+      });
+    },
+    getChartPengunjung() {
+      API.get("/api/jumlahpengunjung").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.chart1.series.data = data.y;
+          this.chart1.options.xaxis.categories = data.x;
+          setInterval(() => {
+            this.getChartPengunjung;
+          }, 3000);
+        }
+      });
+    },
+    getPengunjungPerhari() {
+      API.get("/api/jmlhpengunjunghariini").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.pengunjung_perhari = data.data;
+          setInterval(() => {
+            this.getPengunjungPerhari;
+          }, 3000);
+        }
+      });
+    },
+    getPengunjungPerminggu() {
+      API.get("/api/jmlhpengunjungmingguini").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.pengunjung_perminggu = data.data;
+          setInterval(() => {
+            this.getPengunjungPerminggu;
+          }, 3000);
+        }
+      });
+    },
+    getPengunjungPerbulan() {
+      API.get("/api/jmlhpengunjungbulanini").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.pengunjung_perbulan = data.data;
+          setInterval(() => {
+            this.getPengunjungPerbulan;
           }, 3000);
         }
       });
