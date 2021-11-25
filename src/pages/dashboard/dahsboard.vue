@@ -248,6 +248,15 @@ export default {
   },
   data() {
     return {
+      suhu_tertinggi: 0,
+      suhu_terendah: 0,
+      suhu_rata: 0,
+      saturasi_tertinggi: 0,
+      saturasi_terendah: 0,
+      saturasi_rata: 0,
+      pengunjung_perhari: 0,
+      pengunjung_perminggu: 0,
+      pengunjung_perbulan: 0,
       chart1: {
         options: {
           chart: {
@@ -375,22 +384,7 @@ export default {
             curve: "smooth",
             lineCap: "butt",
           },
-          title: {
-            text: "Load Average",
-            align: "left",
-            style: {
-              fontSize: "12px",
-            },
-          },
-          subtitle: {
-            text: "20%",
-            floating: true,
-            align: "right",
-            offsetY: 0,
-            style: {
-              fontSize: "22px",
-            },
-          },
+
           xaxis: {
             categories: [],
           },
@@ -495,7 +489,7 @@ export default {
     this.getChartSuhu();
     this.getChartSaturasi();
     this.getChartPengunjung();
-    this.getChartVolume();
+
     this.getSuhuTertinggi();
     this.getSuhuRata();
     this.getSuhuTerendah();
@@ -590,12 +584,42 @@ export default {
       });
     },
     getChartPengunjung() {
-      API.get("/api/maxsuhu").then(({ status, data }) => {
+      API.get("/api/jumlahpengunjung").then(({ status, data }) => {
         if (status == 200 || status == 201) {
           this.chart1.series.data = data.y;
           this.chart1.options.xaxis.categories = data.x;
           setInterval(() => {
             this.getChartPengunjung;
+          }, 3000);
+        }
+      });
+    },
+    getPengunjungPerhari() {
+      API.get("/api/jmlhpengunjunghariini").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.pengunjung_perhari = data.data;
+          setInterval(() => {
+            this.getPengunjungPerhari;
+          }, 3000);
+        }
+      });
+    },
+    getPengunjungPerminggu() {
+      API.get("/api/jmlhpengunjungmingguini").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.pengunjung_perminggu = data.data;
+          setInterval(() => {
+            this.getPengunjungPerminggu;
+          }, 3000);
+        }
+      });
+    },
+    getPengunjungPerbulan() {
+      API.get("/api/jmlhpengunjungbulanini").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.pengunjung_perbulan = data.data;
+          setInterval(() => {
+            this.getPengunjungPerbulan;
           }, 3000);
         }
       });
