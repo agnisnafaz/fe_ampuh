@@ -21,9 +21,10 @@
                 <div class="col-12">
                   <div id="chart-widget7">
                     <apexchart
+                        ref="graph_suhu"
                       height="200"
                       type="area"
-                      :options="chart1.options"
+                      :options="defaultOptions"
                       :series="chart1.series"
                     ></apexchart>
                   </div>
@@ -73,9 +74,10 @@
                 <div class="col-12">
                   <div id="chart-widget7">
                     <apexchart
+                        ref="graph_saturasi"
                       height="200"
                       type="area"
-                      :options="chart2.options"
+                      :options="defaultOptions"
                       :series="chart2.series"
                     ></apexchart>
                   </div>
@@ -134,9 +136,10 @@
               <div class="chart-container">
                 <div id="columnchart">
                   <apexchart
+                      ref="graph_pengunjung"
                     height="250"
                     type="bar"
-                    :options="chart3.options"
+                    :options="defaultOptions"
                     :series="chart3.series"
                   ></apexchart>
                 </div>
@@ -206,40 +209,9 @@
 </template>
 <script>
 import API from "@/services/api.service";
+import lineOptions from "@/plugins/optionsLineChart"
 var primary = localStorage.getItem("primary_color") || "#7366ff";
 var secondary = localStorage.getItem("secondary_color") || "#f73164";
-// import countTo from "vue-count-to";
-// function generateData1(count, yrange) {
-//   var i = 0;
-//   var series = [];
-//   while (i < count) {
-//     var x = "w" + (i + 1).toString();
-//     var y =
-//       Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-
-//     series.push({
-//       x: x,
-//       y: y,
-//     });
-//     i++;
-//   }
-//   return series;
-// }
-function generateData(baseval, count, yrange) {
-  var i = 0;
-  var series = [];
-  while (i < count) {
-    var x = Math.floor(Math.random() * (750 - 1 + 1)) + 1;
-    var y =
-      Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-    var z = Math.floor(Math.random() * (75 - 15 + 1)) + 15;
-
-    series.push([x, y, z]);
-    baseval += 86400000;
-    i++;
-  }
-  return series;
-}
 
 export default {
   name: "ChartWidgets",
@@ -257,46 +229,8 @@ export default {
       pengunjung_perhari: 0,
       pengunjung_perminggu: 0,
       pengunjung_perbulan: 0,
+      defaultOptions:lineOptions,
       chart1: {
-        options: {
-          chart: {
-            width: 510,
-            height: 190,
-            type: "area",
-            toolbar: {
-              show: false,
-            },
-          },
-          colors: [primary],
-          dataLabels: {
-            enabled: false,
-          },
-          stroke: {
-            curve: "smooth",
-            width: 2,
-          },
-          xaxis: {
-            show: true,
-            categories: [],
-          },
-          fill: {
-            colors: [primary],
-          },
-          tooltip: {
-            x: {
-              format: "dd/MM/yy HH:mm",
-            },
-          },
-          grid: {
-            yaxis: {
-              show: false,
-            },
-            padding: {
-              right: -75,
-              bottom: 0,
-            },
-          },
-        },
         series: [
           {
             name: "Suhu",
@@ -305,45 +239,6 @@ export default {
         ],
       },
       chart2: {
-        options: {
-          chart: {
-            width: 510,
-            height: 190,
-            type: "area",
-            toolbar: {
-              show: false,
-            },
-          },
-          colors: ["#51BB25"],
-          dataLabels: {
-            enabled: false,
-          },
-          stroke: {
-            curve: "smooth",
-            width: 2,
-          },
-          xaxis: {
-            show: true,
-            categories: [],
-          },
-          fill: {
-            colors: ["#51BB25"],
-          },
-          tooltip: {
-            x: {
-              format: "dd/MM/yy HH:mm",
-            },
-          },
-          grid: {
-            yaxis: {
-              show: false,
-            },
-            padding: {
-              right: -75,
-              bottom: 0,
-            },
-          },
-        },
         series: [
           {
             name: "Saturasi",
@@ -352,53 +247,6 @@ export default {
         ],
       },
       chart3: {
-        options: {
-          chart: {
-            width: 585,
-            height: 350,
-            type: "bar",
-            toolbar: {
-              show: false,
-            },
-            zoom: {
-              enabled: false,
-            },
-          },
-          legend: {
-            show: false,
-          },
-          colors: [primary],
-          dataLabels: {
-            enabled: false,
-          },
-          plotOptions: {
-            bar: {
-              radius: 10,
-              horizontal: false,
-              columnWidth: "55%",
-            },
-          },
-          stroke: {
-            show: true,
-            colors: ["transparent"],
-            curve: "smooth",
-            lineCap: "butt",
-          },
-
-          xaxis: {
-            categories: [],
-          },
-          fill: {
-            colors: [secondary],
-          },
-          tooltip: {
-            y: {
-              formatter: function(val) {
-                return "$ " + val + " thousands";
-              },
-            },
-          },
-        },
         series: [
           {
             data: [],
@@ -503,11 +351,32 @@ export default {
     getChartSuhu() {
       API.get("/api/grafiksuhu").then(({ status, data }) => {
         if (status === 200 || status === 201) {
-          this.chart1.series.data = data.y;
-          this.chart1.options.xaxis.categories = data.x;
-          console.log(this.chart1.data);
+          this.$refs.graph_suhu.updateOptions(this.getOptions(data.x))
+          this.$refs.graph_suhu.updateSeries(this.getSeries("Suhu",data.y))
           setInterval(() => {
             this.getChartSuhu();
+          }, 3000);
+        }
+      });
+    },
+    getChartSaturasi() {
+      API.get("/api/grafiksaturasi").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.$refs.graph_saturasi.updateOptions(this.getOptions(data.x))
+          this.$refs.graph_saturasi.updateSeries(this.getSeries("Saturasi",data.y))
+          setInterval(() => {
+            this.getChartSaturasi();
+          }, 3000);
+        }
+      });
+    },
+    getChartPengunjung() {
+      API.get("/api/grafikpengunjung").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.$refs.graph_pengunjung.updateOptions(this.getOptions(data.x))
+          this.$refs.graph_pengunjung.updateSeries(this.getSeries("Pengunjung",data.y))
+          setInterval(() => {
+            this.getChartPengunjung();
           }, 3000);
         }
       });
@@ -542,17 +411,6 @@ export default {
         }
       });
     },
-    getChartSaturasi() {
-      API.get("/api/grafiksaturasi").then(({ status, data }) => {
-        if (status == 200 || status == 201) {
-          this.chart2.series.data = data.y;
-          this.chart2.options.xaxis.categories = data.x;
-          setInterval(() => {
-            this.getChartSaturasi();
-          }, 3000);
-        }
-      });
-    },
     getSaturasiTertinggi() {
       API.get("/api/maxsaturasi").then(({ status, data }) => {
         if (status == 200 || status == 201) {
@@ -583,17 +441,7 @@ export default {
         }
       });
     },
-    getChartPengunjung() {
-      API.get("/api/grafikpengunjung").then(({ status, data }) => {
-        if (status == 200 || status == 201) {
-          this.chart3.series.data = data.y;
-          this.chart3.options.xaxis.categories = data.x;
-          setInterval(() => {
-            this.getChartPengunjung();
-          }, 3000);
-        }
-      });
-    },
+
     getPengunjungPerhari() {
       API.get("/api/jmlhpengunjunghariini").then(({ status, data }) => {
         if (status == 200 || status == 201) {
@@ -624,6 +472,22 @@ export default {
         }
       });
     },
+    getOptions(categories){
+      return {
+        xaxis: {
+          show: true,
+          categories: categories,
+        }
+      }
+    },
+    getSeries(name,series){
+      return [
+          {
+            name: name,
+            data: series,
+          }
+      ]
+    }
   },
 };
 </script>
