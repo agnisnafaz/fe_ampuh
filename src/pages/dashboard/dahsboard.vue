@@ -24,8 +24,8 @@
                         ref="graph_suhu"
                       height="200"
                       type="area"
-                      :options="defaultOptions"
-                      :series="chart1.series"
+                      :options="optionsSuhu"
+                      :series="seriesSuhu"
                     ></apexchart>
                   </div>
                 </div>
@@ -77,8 +77,8 @@
                         ref="graph_saturasi"
                       height="200"
                       type="area"
-                      :options="defaultOptions"
-                      :series="chart2.series"
+                      :options="optionsSaturasi"
+                      :series="seriesSaturasi"
                     ></apexchart>
                   </div>
                 </div>
@@ -139,8 +139,8 @@
                       ref="graph_pengunjung"
                     height="250"
                     type="bar"
-                    :options="defaultOptions"
-                    :series="chart3.series"
+                    :options="optionsPengunjung"
+                    :series="seriesPengunjung"
                   ></apexchart>
                 </div>
               </div>
@@ -209,7 +209,7 @@
 </template>
 <script>
 import API from "@/services/api.service";
-import lineOptions from "@/plugins/optionsLineChart"
+import {chartSuhu,chartPengunjung,chartSaturasi} from "@/plugins/optionsLineChart"
 var primary = localStorage.getItem("primary_color") || "#7366ff";
 var secondary = localStorage.getItem("secondary_color") || "#f73164";
 
@@ -229,30 +229,27 @@ export default {
       pengunjung_perhari: 0,
       pengunjung_perminggu: 0,
       pengunjung_perbulan: 0,
-      defaultOptions:lineOptions,
-      chart1: {
-        series: [
-          {
-            name: "Suhu",
-            data: [],
-          },
-        ],
-      },
-      chart2: {
-        series: [
-          {
-            name: "Saturasi",
-            data: [],
-          },
-        ],
-      },
-      chart3: {
-        series: [
-          {
-            data: [],
-          },
-        ],
-      },
+      optionsSuhu:chartSuhu,
+      seriesSuhu:[
+        {
+          name: "Suhu",
+          data: [],
+        },
+      ],
+      optionsSaturasi:chartSaturasi,
+      seriesSaturasi:[
+        {
+          name: "Saturasi",
+          data: [],
+        },
+      ],
+      optionsPengunjung:chartPengunjung,
+      seriesPengunjung:[
+        {
+          name: "Pengunjung",
+          data: [],
+        },
+      ],
       chart4: {
         options: {
           chart: {
