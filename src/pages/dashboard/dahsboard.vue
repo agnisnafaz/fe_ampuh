@@ -185,7 +185,7 @@
               <div class="chart-container">
                 <apexchart
                   ref="graph_volume"
-                  height="250"
+                  height="300"
                   type="radialBar"
                   :options="optionsVolume"
                   :series="seriesVolume"
@@ -311,10 +311,10 @@ export default {
       });
     },
     getChartVolume() {
-      API.get("/api/grafikvolume").then(({ status, data }) => {
+      API.get("/api/cairan").then(({ status, data }) => {
         if (status == 200 || status == 201) {
           this.$refs.graph_volume.updateSeries(
-            this.getSeries("Volume", data.y)
+            this.getSeries("Volume", data.data)
           );
           setInterval(() => {
             this.getChartVolume();
