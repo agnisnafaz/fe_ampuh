@@ -21,7 +21,7 @@
                 <div class="col-12">
                   <div id="chart-widget7">
                     <apexchart
-                        ref="graph_suhu"
+                      ref="graph_suhu"
                       height="200"
                       type="area"
                       :options="optionsSuhu"
@@ -74,7 +74,7 @@
                 <div class="col-12">
                   <div id="chart-widget7">
                     <apexchart
-                        ref="graph_saturasi"
+                      ref="graph_saturasi"
                       height="200"
                       type="area"
                       :options="optionsSaturasi"
@@ -136,7 +136,7 @@
               <div class="chart-container">
                 <div id="columnchart">
                   <apexchart
-                      ref="graph_pengunjung"
+                    ref="graph_pengunjung"
                     height="250"
                     type="bar"
                     :options="optionsPengunjung"
@@ -181,9 +181,8 @@
             </div>
           </px-card>
         </div>
-
         <div class="col-xl-6 col-md-6 box-col-12">
-          <px-card title="Volume Handsanitizer">
+          <px-card title="Volume">
             <div class="bar-chart-widget">
               <div class="top-content bg-primary"></div>
               <div class="bottom-content card-body">
@@ -191,10 +190,11 @@
                   <div class="col-12">
                     <div id="chart-widget5">
                       <apexchart
-                        height="350"
+                        ref="graph_volume"
+                        height="360"
                         type="radialBar"
-                        :options="chart4.options"
-                        :series="chart4.series"
+                        :options="optionsPengunjung"
+                        :series="seriesPengunjung"
                       ></apexchart>
                     </div>
                   </div>
@@ -209,7 +209,12 @@
 </template>
 <script>
 import API from "@/services/api.service";
-import {chartSuhu,chartPengunjung,chartSaturasi} from "@/plugins/optionsLineChart"
+import {
+  chartSuhu,
+  chartPengunjung,
+  chartSaturasi,
+  chartVolume,
+} from "@/plugins/optionsLineChart";
 var primary = localStorage.getItem("primary_color") || "#7366ff";
 var secondary = localStorage.getItem("secondary_color") || "#f73164";
 
@@ -229,111 +234,42 @@ export default {
       pengunjung_perhari: 0,
       pengunjung_perminggu: 0,
       pengunjung_perbulan: 0,
-      optionsSuhu:chartSuhu,
-      seriesSuhu:[
+      optionsSuhu: chartSuhu,
+      seriesSuhu: [
         {
           name: "Suhu",
           data: [],
         },
       ],
-      optionsSaturasi:chartSaturasi,
-      seriesSaturasi:[
+      optionsSaturasi: chartSaturasi,
+      seriesSaturasi: [
         {
           name: "Saturasi",
           data: [],
         },
       ],
-      optionsPengunjung:chartPengunjung,
-      seriesPengunjung:[
+      optionsPengunjung: chartPengunjung,
+      seriesPengunjung: [
         {
           name: "Pengunjung",
           data: [],
         },
       ],
-      chart4: {
-        options: {
-          chart: {
-            width: 585,
-            height: 360,
-            type: "radialBar",
-          },
-          plotOptions: {
-            radialBar: {
-              startAngle: -135,
-              endAngle: 225,
-              hollow: {
-                margin: 0,
-                size: "70%",
-                background: "#fff",
-                image: undefined,
-                imageOffsetX: 0,
-                imageOffsetY: 0,
-                position: "front",
-                dropShadow: {
-                  enabled: true,
-                  top: 3,
-                  left: 0,
-                  blur: 4,
-                  opacity: 0.05,
-                },
-              },
-              track: {
-                background: "#fff",
-                strokeWidth: "67%",
-                margin: 0, // margin is in pixels
-                dropShadow: {
-                  enabled: true,
-                  top: -3,
-                  left: 0,
-                  blur: 4,
-                  opacity: 0.15,
-                },
-              },
-              dataLabels: {
-                show: true,
-                name: {
-                  offsetY: -10,
-                  show: true,
-                  color: "#111",
-                  fontSize: "17px",
-                },
-                value: {
-                  formatter: function(val) {
-                    return parseInt(val);
-                  },
-                  color: "#111",
-                  fontSize: "36px",
-                  show: true,
-                },
-              },
-            },
-          },
-          fill: {
-            type: "gradient",
-            gradient: {
-              shade: "dark",
-              type: "horizontal",
-              shadeIntensity: 0.5,
-              gradientToColors: [primary],
-              inverseColors: true,
-              opacityFrom: 1,
-              opacityTo: 1,
-              stops: [0, 100],
-            },
-          },
-          stroke: {
-            lineCap: "round",
-          },
+      optionsVolume: chartVolume,
+      seriesVolume: [
+        {
+          name: "Volume",
+          data: [],
         },
-        series: [70],
-        labels: ["Volatility"],
-      },
+      ],
     };
   },
   created() {
     this.getChartSuhu();
     this.getChartSaturasi();
     this.getChartPengunjung();
+    this.getChartVolume();
+
     this.getSuhuTertinggi();
     this.getSuhuRata();
     this.getSuhuTerendah();
@@ -348,8 +284,8 @@ export default {
     getChartSuhu() {
       API.get("/api/grafiksuhu").then(({ status, data }) => {
         if (status === 200 || status === 201) {
-          this.$refs.graph_suhu.updateOptions(this.getOptions(data.x))
-          this.$refs.graph_suhu.updateSeries(this.getSeries("Suhu",data.y))
+          this.$refs.graph_suhu.updateOptions(this.getOptions(data.x));
+          this.$refs.graph_suhu.updateSeries(this.getSeries("Suhu", data.y));
           setInterval(() => {
             this.getChartSuhu();
           }, 3000);
@@ -359,8 +295,11 @@ export default {
     getChartSaturasi() {
       API.get("/api/grafiksaturasi").then(({ status, data }) => {
         if (status == 200 || status == 201) {
-          this.$refs.graph_saturasi.updateOptions(this.getOptions(data.x))
-          this.$refs.graph_saturasi.updateSeries(this.getSeries("Saturasi",data.y))
+          this.$refs.graph_saturasi.updateOptions(this.getOptions(data.x));
+          this.$refs.graph_saturasi.updateSeries(
+            this.getSeries("Saturasi", data.y)
+          );
+
           setInterval(() => {
             this.getChartSaturasi();
           }, 3000);
@@ -370,14 +309,29 @@ export default {
     getChartPengunjung() {
       API.get("/api/grafikpengunjung").then(({ status, data }) => {
         if (status == 200 || status == 201) {
-          this.$refs.graph_pengunjung.updateOptions(this.getOptions(data.x))
-          this.$refs.graph_pengunjung.updateSeries(this.getSeries("Pengunjung",data.y))
+          this.$refs.graph_pengunjung.updateOptions(this.getOptions(data.x));
+          this.$refs.graph_pengunjung.updateSeries(
+            this.getSeries("Pengunjung", data.y)
+          );
           setInterval(() => {
             this.getChartPengunjung();
           }, 3000);
         }
       });
     },
+    getChartVolume() {
+      API.get("/api/grafikvolume").then(({ status, data }) => {
+        if (status == 200 || status == 201) {
+          this.$refs.graph_volume.updateSeries(
+            this.getSeries("Volume", data.y)
+          );
+          setInterval(() => {
+            this.getChartVolume();
+          }, 3000);
+        }
+      });
+    },
+
     getSuhuTertinggi() {
       API.get("/api/maxsuhu").then(({ status, data }) => {
         if (status == 200 || status == 201) {
@@ -469,22 +423,22 @@ export default {
         }
       });
     },
-    getOptions(categories){
+    getOptions(categories) {
       return {
         xaxis: {
           show: true,
           categories: categories,
-        }
-      }
+        },
+      };
     },
-    getSeries(name,series){
+    getSeries(name, series) {
       return [
-          {
-            name: name,
-            data: series,
-          }
-      ]
-    }
+        {
+          name: name,
+          data: series,
+        },
+      ];
+    },
   },
 };
 </script>
