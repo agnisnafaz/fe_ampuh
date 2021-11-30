@@ -1,33 +1,25 @@
 <template>
   <div class="container">
-    <v-row>
-      <v-col sm="12" md="12" lg="12" xl="12" class="mt-16 mt-sm-16">
-        <h1 class="text-center teks">Data Statistik</h1>
-      </v-col>
-
-      <div class="row">
-        <div class="col-md-6">
+    <div class="row">
+      <div class="row mt-10">
+        <div class="col-md-6 mt-10">
           <px-card>
             <div slot="headerCustom">
               <div class="row">
-                <div class="col-9">
-                  <h5>Suhu</h5>
-                </div>
+                <h5>Suhu</h5>
               </div>
             </div>
 
             <div slot="with-padding">
               <div class="row">
                 <div class="col-12">
-                  <div id="chart-widget7">
-                    <apexchart
-                      ref="graph_suhu"
-                      height="200"
-                      type="area"
-                      :options="optionsSuhu"
-                      :series="seriesSuhu"
-                    ></apexchart>
-                  </div>
+                  <apexchart
+                    ref="graph_suhu"
+                    height="200"
+                    type="area"
+                    :options="optionsSuhu"
+                    :series="seriesSuhu"
+                  ></apexchart>
                 </div>
                 <div class="container">
                   <div class="row">
@@ -67,20 +59,24 @@
             </div>
           </px-card>
         </div>
-        <div class="col-xl-6 col-md-6 box-col-12">
-          <px-card title="Saturasi">
+        <div class="col-md-6 mt-10">
+          <px-card>
+            <div slot="headerCustom">
+              <div class="row">
+                <h5>Saturasi</h5>
+              </div>
+            </div>
+
             <div slot="with-padding">
               <div class="row">
                 <div class="col-12">
-                  <div id="chart-widget7">
-                    <apexchart
-                      ref="graph_saturasi"
-                      height="200"
-                      type="area"
-                      :options="optionsSaturasi"
-                      :series="seriesSaturasi"
-                    ></apexchart>
-                  </div>
+                  <apexchart
+                    ref="graph_saturasi"
+                    height="200"
+                    type="area"
+                    :options="optionsSaturasi"
+                    :series="seriesSaturasi"
+                  ></apexchart>
                 </div>
                 <div class="container">
                   <div class="row">
@@ -127,22 +123,18 @@
           <px-card>
             <div slot="headerCustom">
               <div class="row">
-                <div class="col-9">
-                  <h5>Pengunjung</h5>
-                </div>
+                <h5>Pengunjung</h5>
               </div>
             </div>
             <div slot="with-padding">
               <div class="chart-container">
-                <div id="columnchart">
-                  <apexchart
-                    ref="graph_pengunjung"
-                    height="250"
-                    type="bar"
-                    :options="optionsPengunjung"
-                    :series="seriesPengunjung"
-                  ></apexchart>
-                </div>
+                <apexchart
+                  ref="graph_pengunjung"
+                  height="200"
+                  type="bar"
+                  :options="optionsPengunjung"
+                  :series="seriesPengunjung"
+                ></apexchart>
               </div>
               <div class="container">
                 <div class="row">
@@ -182,29 +174,28 @@
           </px-card>
         </div>
         <div class="col-xl-6 col-md-6 box-col-12">
-          <px-card title="Volume">
-            <div class="bar-chart-widget">
-              <div class="top-content bg-primary"></div>
-              <div class="bottom-content card-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div id="chart-widget5">
-                      <apexchart
-                        ref="graph_volume"
-                        height="360"
-                        type="radialBar"
-                        :options="optionsPengunjung"
-                        :series="seriesPengunjung"
-                      ></apexchart>
-                    </div>
-                  </div>
-                </div>
+          <px-card>
+            <div slot="headerCustom">
+              <div class="row">
+                <h5>Volume</h5>
+              </div>
+            </div>
+
+            <div slot="with-padding">
+              <div class="chart-container">
+                <apexchart
+                  ref="graph_volume"
+                  height="250"
+                  type="radialBar"
+                  :options="optionsVolume"
+                  :series="seriesVolume"
+                ></apexchart>
               </div>
             </div>
           </px-card>
         </div>
       </div>
-    </v-row>
+    </div>
   </div>
 </template>
 <script>

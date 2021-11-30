@@ -1,7 +1,7 @@
 <template>
   <header id="header">
     <div class="warna border rounded">
-      <h1 class="font text-center">AMPUH 2.0</h1>
+      <h1 class="font text-center">DATA STATISTIK AMPUH</h1>
     </div>
   </header>
 </template>
