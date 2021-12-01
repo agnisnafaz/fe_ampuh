@@ -183,13 +183,15 @@
 
             <div slot="with-padding">
               <div class="chart-container">
-                <apexchart
-                  ref="graph_volume"
-                  height="300"
-                  type="radialBar"
-                  :options="optionsVolume"
-                  :series="seriesVolume"
-                ></apexchart>
+                <div id="chart">
+                  <apexchart
+                    ref="graph_volume"
+                    height="300"
+                    type="radialBar"
+                    :options="optionsVolume"
+                    :series="seriesVolume"
+                  ></apexchart>
+                </div>
               </div>
             </div>
           </px-card>
@@ -261,22 +263,19 @@ export default {
     this.getChartPengunjung();
     this.getChartVolume();
 
-    this.getSuhuTertinggi();
-    this.getSuhuRata();
-    this.getSuhuTerendah();
-    this.getSaturasiTertinggi();
-    this.getSaturasiRata();
-    this.getSaturasiTerendah();
     this.getPengunjungPerhari();
     this.getPengunjungPerminggu();
     this.getPengunjungPerbulan();
   },
   methods: {
     getChartSuhu() {
-      API.get("/api/grafiksuhu").then(({ status, data }) => {
+      API.get("/api/suhu").then(({ status, data }) => {
         if (status === 200 || status === 201) {
           this.$refs.graph_suhu.updateOptions(this.getOptions(data.x));
           this.$refs.graph_suhu.updateSeries(this.getSeries("Suhu", data.y));
+          this.suhu_tertinggi = data.data_tertinggi;
+          this.suhu_terendah = data.data_terendah;
+          this.suhu_rata = data.data_rata - rata;
           setInterval(() => {
             this.getChartSuhu();
           }, 3000);
@@ -284,12 +283,15 @@ export default {
       });
     },
     getChartSaturasi() {
-      API.get("/api/grafiksaturasi").then(({ status, data }) => {
+      API.get("/api/saturasi").then(({ status, data }) => {
         if (status == 200 || status == 201) {
           this.$refs.graph_saturasi.updateOptions(this.getOptions(data.x));
           this.$refs.graph_saturasi.updateSeries(
             this.getSeries("Saturasi", data.y)
           );
+          this.saturasi_tertinggi = data.data_tertiggi;
+          this.saturasi_terendah = data.data_terendah;
+          this.saturasi_rata = data.data_rata - rata;
 
           setInterval(() => {
             this.getChartSaturasi();
@@ -314,71 +316,10 @@ export default {
       API.get("/api/cairan").then(({ status, data }) => {
         if (status == 200 || status == 201) {
           this.$refs.graph_volume.updateSeries(
-            this.getSeries("Volume", data.data)
+            this.getSeriesVolume("Volume", data.data)
           );
           setInterval(() => {
             this.getChartVolume();
-          }, 3000);
-        }
-      });
-    },
-
-    getSuhuTertinggi() {
-      API.get("/api/maxsuhu").then(({ status, data }) => {
-        if (status == 200 || status == 201) {
-          this.suhu_tertinggi = data.data;
-          setInterval(() => {
-            this.getSuhuTertinggi();
-          }, 3000);
-        }
-      });
-    },
-    getSuhuTerendah() {
-      API.get("/api/minsuhu").then(({ status, data }) => {
-        if (status == 200 || status == 201) {
-          this.suhu_terendah = data.data;
-          setInterval(() => {
-            this.getSuhuTerendah();
-          }, 3000);
-        }
-      });
-    },
-    getSuhuRata() {
-      API.get("/api/meansuhu").then(({ status, data }) => {
-        if (status == 200 || status == 201) {
-          this.suhu_rata = data.data;
-          setInterval(() => {
-            this.getSuhuRata();
-          }, 3000);
-        }
-      });
-    },
-    getSaturasiTertinggi() {
-      API.get("/api/maxsaturasi").then(({ status, data }) => {
-        if (status == 200 || status == 201) {
-          this.saturasi_tertinggi = data.data;
-          setInterval(() => {
-            this.getSaturasiTertinggi();
-          }, 3000);
-        }
-      });
-    },
-    getSaturasiTerendah() {
-      API.get("/api/minsaturasi").then(({ status, data }) => {
-        if (status == 200 || status == 201) {
-          this.saturasi_terendah = data.data;
-          setInterval(() => {
-            this.getSaturasiTerendah();
-          }, 3000);
-        }
-      });
-    },
-    getSaturasiRata() {
-      API.get("/api/meansaturasi").then(({ status, data }) => {
-        if (status == 200 || status == 201) {
-          this.saturasi_rata = data.data;
-          setInterval(() => {
-            this.getSaturasiRata();
           }, 3000);
         }
       });
@@ -423,6 +364,14 @@ export default {
       };
     },
     getSeries(name, series) {
+      return [
+        {
+          name: name,
+          data: series,
+        },
+      ];
+    },
+    getSeriesVolume(name, series) {
       return [
         {
           name: name,

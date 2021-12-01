@@ -125,12 +125,6 @@ export const chartVolume = {
     height: 350,
     type: "radialBar",
   },
-  plotOptions: {
-    radialBar: {
-      hollow: {
-        size: "70%",
-      },
-    },
-  },
+
   labels: ["Volume"],
 };
