@@ -177,7 +177,7 @@
           <px-card>
             <div slot="headerCustom">
               <div class="row">
-                <h5>Volume</h5>
+                <h5>Volume Handsanitizer</h5>
               </div>
             </div>
 
@@ -275,10 +275,10 @@ export default {
           this.$refs.graph_suhu.updateSeries(this.getSeries("Suhu", data.y));
           this.suhu_tertinggi = data.data_tertinggi;
           this.suhu_terendah = data.data_terendah;
-          this.suhu_rata = data.data_rata - rata;
-          setInterval(() => {
-            this.getChartSuhu();
-          }, 3000);
+          this.suhu_rata = data.data_rata.toFixed(2);
+          // setInterval(() => {
+          //   this.getChartSuhu();
+          // }, 3000);
         }
       });
     },
@@ -289,13 +289,14 @@ export default {
           this.$refs.graph_saturasi.updateSeries(
             this.getSeries("Saturasi", data.y)
           );
-          this.saturasi_tertinggi = data.data_tertiggi;
+          console.log(data);
+          this.saturasi_tertinggi = data.data_tertinggi;
           this.saturasi_terendah = data.data_terendah;
-          this.saturasi_rata = data.data_rata - rata;
+          this.saturasi_rata = data.data_rata.toFixed(2);
 
-          setInterval(() => {
-            this.getChartSaturasi();
-          }, 3000);
+          // setInterval(() => {
+          //   this.getChartSaturasi();
+          // }, 3000);
         }
       });
     },
@@ -306,21 +307,22 @@ export default {
           this.$refs.graph_pengunjung.updateSeries(
             this.getSeries("Pengunjung", data.y)
           );
-          setInterval(() => {
-            this.getChartPengunjung();
-          }, 3000);
+          // setInterval(() => {
+          //   this.getChartPengunjung();
+          // }, 3000);
         }
       });
     },
     getChartVolume() {
       API.get("/api/cairan").then(({ status, data }) => {
         if (status == 200 || status == 201) {
+          console.log(data);
           this.$refs.graph_volume.updateSeries(
             this.getSeriesVolume("Volume", data.data)
           );
-          setInterval(() => {
-            this.getChartVolume();
-          }, 3000);
+          // setInterval(() => {
+          //   this.getChartVolume();
+          // }, 3000);
         }
       });
     },
@@ -329,9 +331,9 @@ export default {
       API.get("/api/jmlhpengunjunghariini").then(({ status, data }) => {
         if (status == 200 || status == 201) {
           this.pengunjung_perhari = data.data;
-          setInterval(() => {
-            this.getPengunjungPerhari();
-          }, 3000);
+          // setInterval(() => {
+          //   this.getPengunjungPerhari();
+          // }, 3000);
         }
       });
     },
@@ -339,9 +341,9 @@ export default {
       API.get("/api/jmlhpengunjungmingguini").then(({ status, data }) => {
         if (status == 200 || status == 201) {
           this.pengunjung_perminggu = data.data;
-          setInterval(() => {
-            this.getPengunjungPerminggu();
-          }, 3000);
+          // setInterval(() => {
+          //   this.getPengunjungPerminggu();
+          // }, 3000);
         }
       });
     },
@@ -349,9 +351,9 @@ export default {
       API.get("/api/jmlhpengunjungbulanini").then(({ status, data }) => {
         if (status == 200 || status == 201) {
           this.pengunjung_perbulan = data.data;
-          setInterval(() => {
-            this.getPengunjungPerbulan();
-          }, 3000);
+          // setInterval(() => {
+          //   this.getPengunjungPerbulan();
+          // }, 3000);
         }
       });
     },
@@ -372,12 +374,7 @@ export default {
       ];
     },
     getSeriesVolume(name, series) {
-      return [
-        {
-          name: name,
-          data: series,
-        },
-      ];
+      return [parseFloat(series).toFixed(2)];
     },
   },
 };
