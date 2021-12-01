@@ -127,4 +127,24 @@ export const chartVolume = {
   },
 
   labels: ["Volume"],
+  plotOptions: {
+    radialBar: {
+      dataLabels: {
+        name: {
+          show: true,
+        },
+        value: {
+          show: true,
+          fontSize: "14px",
+          formatter: function (val) {
+            return val.toFixed(2) + "%";
+          },
+        },
+        total: {
+          show: true,
+          label: "Volume",
+        },
+      },
+    },
+  },
 };
