@@ -63,7 +63,7 @@
           <px-card>
             <div slot="headerCustom">
               <div class="row">
-                <h5>Saturasi</h5>
+                <h5>Saturasi Oksigen</h5>
               </div>
             </div>
 
@@ -177,7 +177,7 @@
           <px-card>
             <div slot="headerCustom">
               <div class="row">
-                <h5>Volume Handsanitizer</h5>
+                <h5>Volume Sisa Handsanitizer</h5>
               </div>
             </div>
 
